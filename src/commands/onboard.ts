@@ -19,9 +19,9 @@ export async function onboardCommand(opts: OnboardOptions, runtime: RuntimeEnv =
   if (normalizedOpts.nonInteractive && normalizedOpts.acceptRisk !== true) {
     runtime.error(
       [
-        "Non-interactive onboarding requires explicit risk acknowledgement.",
-        "Read: https://docs.clawd.bot/security",
-        `Re-run with: ${formatCliCommand("clawdbot onboard --non-interactive --accept-risk ...")}`,
+        "非交互式安装引导需要明确的风险确认。",
+        "阅读：https://docs.clawd.bot/security",
+        `使用以下命令重新运行：${formatCliCommand("clawdbot onboard --non-interactive --accept-risk ...")}`,
       ].join("\n"),
     );
     runtime.exit(1);
@@ -39,9 +39,9 @@ export async function onboardCommand(opts: OnboardOptions, runtime: RuntimeEnv =
   if (process.platform === "win32") {
     runtime.log(
       [
-        "Windows detected.",
-        "WSL2 is strongly recommended; native Windows is untested and more problematic.",
-        "Guide: https://docs.clawd.bot/windows",
+        "检测到 Windows 系统。",
+        "强烈推荐使用 WSL2；原生 Windows 未经测试且问题较多。",
+        "指南：https://docs.clawd.bot/windows",
       ].join("\n"),
     );
   }

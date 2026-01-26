@@ -30,7 +30,7 @@ import type { NodeManagerChoice, OnboardMode, ResetScope } from "./onboard-types
 
 export function guardCancel<T>(value: T | symbol, runtime: RuntimeEnv): T {
   if (isCancel(value)) {
-    cancel(stylePromptTitle("Setup cancelled.") ?? "Setup cancelled.");
+    cancel(stylePromptTitle("设置已取消。") ?? "设置已取消。");
     runtime.exit(0);
   }
   return value as T;
@@ -55,7 +55,7 @@ export function summarizeExistingConfig(config: ClawdbotConfig): string {
   if (config.skills?.install?.nodeManager) {
     rows.push(shortenHomeInString(`skills.nodeManager: ${config.skills.install.nodeManager}`));
   }
-  return rows.length ? rows.join("\n") : "No key settings detected.";
+  return rows.length ? rows.join("\n") : "未检测到关键设置。";
 }
 
 export function randomToken(): string {
@@ -118,7 +118,7 @@ export async function resolveBrowserOpenCommand(): Promise<BrowserOpenCommand> {
     Boolean(process.env.SSH_CONNECTION);
 
   if (isSsh && !hasDisplay && platform !== "win32") {
-    return { argv: null, reason: "ssh-no-display" };
+    return { argv: null, reason: "ssh-无显示器" };
   }
 
   if (platform === "win32") {
@@ -131,26 +131,26 @@ export async function resolveBrowserOpenCommand(): Promise<BrowserOpenCommand> {
 
   if (platform === "darwin") {
     const hasOpen = await detectBinary("open");
-    return hasOpen ? { argv: ["open"], command: "open" } : { argv: null, reason: "missing-open" };
+    return hasOpen ? { argv: ["open"], command: "open" } : { argv: null, reason: "缺少-open" };
   }
 
   if (platform === "linux") {
     const wsl = await isWSL();
     if (!hasDisplay && !wsl) {
-      return { argv: null, reason: "no-display" };
+      return { argv: null, reason: "无显示器" };
     }
     if (wsl) {
       const hasWslview = await detectBinary("wslview");
       if (hasWslview) return { argv: ["wslview"], command: "wslview" };
-      if (!hasDisplay) return { argv: null, reason: "wsl-no-wslview" };
+      if (!hasDisplay) return { argv: null, reason: "wsl-无-wslview" };
     }
     const hasXdgOpen = await detectBinary("xdg-open");
     return hasXdgOpen
       ? { argv: ["xdg-open"], command: "xdg-open" }
-      : { argv: null, reason: "missing-xdg-open" };
+      : { argv: null, reason: "缺少-xdg-open" };
   }
 
-  return { argv: null, reason: "unsupported-platform" };
+  return { argv: null, reason: "不支持的平台" };
 }
 
 export async function detectBrowserOpenSupport(): Promise<BrowserOpenSupport> {
@@ -171,12 +171,12 @@ export function formatControlUiSshHint(params: {
   const authedUrl = params.token ? `${localUrl}${tokenParam}` : undefined;
   const sshTarget = resolveSshTargetHint();
   return [
-    "No GUI detected. Open from your computer:",
+    "未检测到图形界面。从您的计算机打开：",
     `ssh -N -L ${params.port}:127.0.0.1:${params.port} ${sshTarget}`,
-    "Then open:",
+    "然后打开：",
     localUrl,
     authedUrl,
-    "Docs:",
+    "文档：",
     "https://docs.clawd.bot/gateway/remote",
     "https://docs.clawd.bot/web/control-ui",
   ]
@@ -213,7 +213,7 @@ export async function openUrl(url: string): Promise<boolean> {
     });
     return true;
   } catch {
-    // ignore; we still print the URL for manual open
+    // 忽略；我们仍会打印URL以便手动打开
     return false;
   }
 }
@@ -241,10 +241,10 @@ export async function ensureWorkspaceAndSessions(
     dir: workspaceDir,
     ensureBootstrapFiles: !options?.skipBootstrap,
   });
-  runtime.log(`Workspace OK: ${shortenHomePath(ws.dir)}`);
+  runtime.log(`工作区正常：${shortenHomePath(ws.dir)}`);
   const sessionsDir = resolveSessionTranscriptsDirForAgent(options?.agentId);
   await fs.mkdir(sessionsDir, { recursive: true });
-  runtime.log(`Sessions OK: ${shortenHomePath(sessionsDir)}`);
+  runtime.log(`会话正常：${shortenHomePath(sessionsDir)}`);
 }
 
 export function resolveNodeManagerOptions(): Array<{
@@ -267,9 +267,9 @@ export async function moveToTrash(pathname: string, runtime: RuntimeEnv): Promis
   }
   try {
     await runCommandWithTimeout(["trash", pathname], { timeoutMs: 5000 });
-    runtime.log(`Moved to Trash: ${shortenHomePath(pathname)}`);
+    runtime.log(`已移至废纸篓：${shortenHomePath(pathname)}`);
   } catch {
-    runtime.log(`Failed to move to Trash (manual delete): ${shortenHomePath(pathname)}`);
+    runtime.log(`移至废纸篓失败（手动删除）：${shortenHomePath(pathname)}`);
   }
 }
 
