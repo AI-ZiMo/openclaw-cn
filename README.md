@@ -29,7 +29,7 @@
 
 [官网](https://clawdbot.com) · [文档](https://docs.clawd.bot) · [快速开始](https://docs.clawd.bot/start/getting-started) · [更新指南](https://docs.clawd.bot/install/updating) · [案例展示](https://docs.clawd.bot/start/showcase) · [常见问题](https://docs.clawd.bot/start/faq) · [安装向导](https://docs.clawd.bot/start/wizard) · [Nix](https://github.com/clawdbot/nix-clawdbot) · [Docker](https://docs.clawd.bot/install/docker) · [Discord](https://discord.gg/clawd)
 
-推荐方式：运行安装向导（`clawdbot onboard`）。它会引导你完成 Gateway、工作区、渠道和技能的配置。CLI 向导是推荐的安装路径，支持 **macOS、Linux 和 Windows（通过 WSL2，强烈推荐）**。
+推荐方式：运行安装向导（`clawdbot-cn onboard`）。它会引导你完成 Gateway、工作区、渠道和技能的配置。CLI 向导是推荐的安装路径，支持 **macOS、Linux 和 Windows（通过 WSL2，强烈推荐）**。
 支持 npm、pnpm 或 bun。
 新用户？从这里开始：[快速开始](https://docs.clawd.bot/start/getting-started)
 
@@ -49,10 +49,10 @@
 运行时要求：**Node ≥22**
 
 ```bash
-npm install -g clawdbot@latest
-# 或者：pnpm add -g clawdbot@latest
+npm install -g clawdbot-cn@latest
+# 或者：pnpm add -g clawdbot-cn@latest
 
-clawdbot onboard --install-daemon
+clawdbot-cn onboard --install-daemon
 ```
 
 向导会安装 Gateway 守护进程（launchd/systemd 用户服务），使其保持运行。
@@ -64,18 +64,18 @@ clawdbot onboard --install-daemon
 完整新手指南（认证、配对、渠道）：[快速开始](https://docs.clawd.bot/start/getting-started)
 
 ```bash
-clawdbot onboard --install-daemon
+clawdbot-cn onboard --install-daemon
 
-clawdbot gateway --port 18789 --verbose
+clawdbot-cn gateway --port 18789 --verbose
 
 # 发送消息
-clawdbot message send --to +1234567890 --message "你好，来自 Clawdbot"
+clawdbot-cn message send --to +1234567890 --message "你好，来自 Clawdbot"
 
 # 与助手对话（可选择将回复发送到任何已连接的渠道：WhatsApp/Telegram/Slack/Discord/Google Chat/Signal/iMessage/BlueBubbles/Microsoft Teams/Matrix/Zalo/Zalo Personal/WebChat）
-clawdbot agent --message "发货清单" --thinking high
+clawdbot-cn agent --message "发货清单" --thinking high
 ```
 
-升级？参考 [更新指南](https://docs.clawd.bot/install/updating)（并运行 `clawdbot doctor`）。
+升级？参考 [更新指南](https://docs.clawd.bot/install/updating)（并运行 `clawdbot-cn doctor`）。
 
 ## 发布渠道
 
@@ -83,7 +83,7 @@ clawdbot agent --message "发货清单" --thinking high
 - **beta**：预发布标签（`vYYYY.M.D-beta.N`），npm dist-tag `beta`（macOS 应用可能缺失）。
 - **dev**：`main` 分支最新代码，npm dist-tag `dev`（如有发布）。
 
-切换渠道（git + npm）：`clawdbot update --channel stable|beta|dev`
+切换渠道（git + npm）：`clawdbot-cn update --channel stable|beta|dev`
 详情：[发布渠道](https://docs.clawd.bot/install/development-channels)
 
 ## 从源码构建（开发）
@@ -113,11 +113,11 @@ Clawdbot 连接到真实的消息平台。请将收到的私信视为**不可信
 完整安全指南：[安全](https://docs.clawd.bot/gateway/security)
 
 Telegram/WhatsApp/Signal/iMessage/Microsoft Teams/Discord/Google Chat/Slack 的默认行为：
-- **私信配对**（`dmPolicy="pairing"` / `channels.discord.dm.policy="pairing"` / `channels.slack.dm.policy="pairing"`）：未知发送者会收到一个短配对码，机器人不会处理他们的消息。
-- 批准方式：`clawdbot pairing approve <channel> <code>`（发送者会被添加到本地白名单存储中）。
+- 私信配对（`dmPolicy="pairing"` / `channels.discord.dm.policy="pairing"` / `channels.slack.dm.policy="pairing"`）：未知发送者会收到一个短配对码，机器人不会处理他们的消息。
+- 批准方式：`clawdbot-cn pairing approve <channel> <code>`（发送者会被添加到本地白名单存储中）。
 - 公开接收私信需要明确选择加入：设置 `dmPolicy="open"` 并在渠道白名单中包含 `"*"`（`allowFrom` / `channels.discord.dm.allowFrom` / `channels.slack.dm.allowFrom`）。
 
-运行 `clawdbot doctor` 可发现有风险或配置错误的私信策略。
+运行 `clawdbot-cn doctor` 可发现有风险或配置错误的私信策略。
 
 ## 亮点功能
 
@@ -134,7 +134,7 @@ Telegram/WhatsApp/Signal/iMessage/Microsoft Teams/Discord/Google Chat/Slack 的�
 
 ### 核心平台
 - [Gateway WS 控制平面](https://docs.clawd.bot/gateway)：会话、在线状态、配置、定时任务、Webhook、[控制 UI](https://docs.clawd.bot/web) 和 [Canvas 主机](https://docs.clawd.bot/platforms/mac/canvas#canvas-a2ui)。
-- [CLI 命令行](https://docs.clawd.bot/tools/agent-send)：gateway、agent、send、[向导](https://docs.clawd.bot/start/wizard) 和 [doctor](https://docs.clawd.bot/gateway/doctor)。
+- [CLI 命令行](https://docs.clawd.bot/tools/agent-send)：gateway、agent、send、[向导](https://docs.clawd.bot/start/wizard) 和 [doctor](https://docs.clawd.bot/gateway/doctor)。中文版使用 `clawdbot-cn` 命令。
 - [Pi 智能体运行时](https://docs.clawd.bot/concepts/agent)：RPC 模式，支持工具流和块流。
 - [会话模型](https://docs.clawd.bot/concepts/session)：`main` 用于直接聊天，群组隔离、激活模式、队列模式、回复返回。群组规则：[群组](https://docs.clawd.bot/concepts/groups)。
 - [媒体管道](https://docs.clawd.bot/nodes/images)：图片/音频/视频、转录钩子、大小限制、临时文件生命周期。音频详情：[音频](https://docs.clawd.bot/nodes/audio)。
@@ -181,7 +181,7 @@ WhatsApp / Telegram / Slack / Discord / Google Chat / Signal / iMessage / BlueBu
 └──────────────┬────────────────┘
                │
                ├─ Pi 智能体 (RPC)
-               ├─ CLI (clawdbot …)
+               ├─ CLI (clawdbot-cn …)
                ├─ WebChat UI
                ├─ macOS 应用
                └─ iOS / Android 节点
@@ -285,7 +285,7 @@ ClawdHub 是一个简洁的技能注册表。启用 ClawdHub 后，智能体可�
 
 - 通过 Bridge 作为节点配对。
 - 语音触发转发 + Canvas 界面。
-- 通过 `clawdbot nodes …` 控制。
+- 通过 `clawdbot-cn nodes …` 控制。
 
 运行手册：[iOS 连接](https://docs.clawd.bot/platforms/ios)
 
