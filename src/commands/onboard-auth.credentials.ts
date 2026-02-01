@@ -215,3 +215,15 @@ export async function setVolcengineApiKey(key: string, agentDir?: string) {
     agentDir: resolveAuthAgentDir(agentDir),
   });
 }
+
+export async function setXiaomiApiKey(key: string, agentDir?: string) {
+  upsertAuthProfile({
+    profileId: "xiaomi:default",
+    credential: {
+      type: "api_key",
+      provider: "xiaomi",
+      key,
+    },
+    agentDir: resolveAuthAgentDir(agentDir),
+  });
+}

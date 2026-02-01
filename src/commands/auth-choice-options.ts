@@ -27,7 +27,8 @@ export type AuthChoiceGroupId =
   | "siliconflow"
   | "dashscope"
   | "deepseek"
-  | "volcengine";
+  | "volcengine"
+  | "xiaomi";
 
 export type AuthChoiceGroup = {
   value: AuthChoiceGroupId;
@@ -144,6 +145,12 @@ const AUTH_CHOICE_GROUP_DEFS: {
     hint: "ARK API key",
     choices: ["volcengine-api-key"],
   },
+  {
+    value: "xiaomi",
+    label: "小米 MiMo",
+    hint: "OpenAI兼容 · API key",
+    choices: ["xiaomi-api-key"],
+  },
 ];
 
 function formatOAuthHint(expires?: number, opts?: { allowStale?: boolean }): string {
@@ -249,6 +256,7 @@ export function buildAuthChoiceOptions(params: {
   });
   options.push({ value: "zai-api-key", label: "Z.AI (GLM 4.7) API key" });
   options.push({ value: "volcengine-api-key", label: "火山引擎 (ARK) API key" });
+  options.push({ value: "xiaomi-api-key", label: "小米 MiMo API key" });
   options.push({ value: "qwen-portal", label: "Qwen OAuth" });
   options.push({
     value: "copilot-proxy",

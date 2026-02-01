@@ -1,4 +1,4 @@
-import { buildVolcengineProvider } from "../agents/models-config.providers.js";
+import { buildVolcengineProvider, buildXiaomiProvider } from "../agents/models-config.providers.js";
 import {
   buildSyntheticModelDefinition,
   SYNTHETIC_BASE_URL,
@@ -766,6 +766,102 @@ export function applyVolcengineConfig(cfg: ClawdbotConfig, modelId: string): Cla
               }
             : undefined),
           primary: `volcengine/${modelId}`,
+        },
+      },
+    },
+  };
+}
+
+export function applyXiaomiProviderConfig(cfg: ClawdbotConfig, modelId: string): ClawdbotConfig {
+  const models = { ...cfg.agents?.defaults?.models };
+  const modelRef = `xiaomi/${modelId}`;
+  models[modelRef] = {
+    ...models[modelRef],
+    alias: models[modelRef]?.alias ?? modelId,
+  };
+
+  const providers = { ...cfg.models?.providers };
+  const existingProvider = providers.xiaomi;
+  const defaultProvider = buildXiaomiProvider();
+  const existingModels = Array.isArray(existingProvider?.models) ? existingProvider.models : [];
+  const defaultModels = defaultProvider.models ?? [];
+  const hasDefaultModel = existingModels.some((model) => model.id === modelId);
+  const mergedModels =
+    existingModels.length > 0
+      ? hasDefaultModel
+        ? existingModels
+        : [
+            ...existingModels,
+            {
+              id: modelId,
+              name: modelId,
+              reasoning: true,
+              input: ["text"] as ("text" | "image")[],
+              cost: { input: 0.7, output: 2.1, cacheRead: 0.07, cacheWrite: 0 },
+              contextWindow: 131072,
+              maxTokens: 65536,
+            },
+          ]
+      : defaultModels.length > 0
+        ? defaultModels
+        : [
+            {
+              id: modelId,
+              name: modelId,
+              reasoning: true,
+              input: ["text"] as ("text" | "image")[],
+              cost: { input: 0.7, output: 2.1, cacheRead: 0.07, cacheWrite: 0 },
+              contextWindow: 131072,
+              maxTokens: 65536,
+            },
+          ];
+
+  const { apiKey: existingApiKey, ...existingProviderRest } = (existingProvider ?? {}) as Record<
+    string,
+    unknown
+  > as { apiKey?: string };
+  const resolvedApiKey = typeof existingApiKey === "string" ? existingApiKey : undefined;
+  const normalizedApiKey = resolvedApiKey?.trim();
+  providers.xiaomi = {
+    ...existingProviderRest,
+    baseUrl: defaultProvider.baseUrl,
+    api: defaultProvider.api,
+    ...(normalizedApiKey ? { apiKey: normalizedApiKey } : {}),
+    models: mergedModels,
+  };
+
+  return {
+    ...cfg,
+    agents: {
+      ...cfg.agents,
+      defaults: {
+        ...cfg.agents?.defaults,
+        models,
+      },
+    },
+    models: {
+      mode: cfg.models?.mode ?? "merge",
+      providers,
+    },
+  };
+}
+
+export function applyXiaomiConfig(cfg: ClawdbotConfig, modelId: string): ClawdbotConfig {
+  const next = applyXiaomiProviderConfig(cfg, modelId);
+  const existingModel = next.agents?.defaults?.model;
+  return {
+    ...next,
+    agents: {
+      ...next.agents,
+      defaults: {
+        ...next.agents?.defaults,
+        model: {
+          ...(existingModel && "fallbacks" in (existingModel as Record<string, unknown>)
+            ? {
+                fallbacks: (existingModel as { fallbacks?: string[] }).fallbacks,
+              }
+            : undefined),
+          primary: `xiaomi/${modelId}`,
         },
       },
     },

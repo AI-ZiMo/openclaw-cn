@@ -13,6 +13,7 @@ import { applyAuthChoiceOpenAI } from "./auth-choice.apply.openai.js";
 import { applyAuthChoiceQwenPortal } from "./auth-choice.apply.qwen-portal.js";
 import type { AuthChoice } from "./onboard-types.js";
 import { applyAuthChoiceVolcengine } from "./auth-choice.apply.volcengine.js";
+import { applyAuthChoiceXiaomi } from "./auth-choice.apply.xiaomi.js";
 
 export type ApplyAuthChoiceParams = {
   authChoice: AuthChoice;
@@ -26,6 +27,7 @@ export type ApplyAuthChoiceParams = {
     tokenProvider?: string;
     token?: string;
     volcengineApiKey?: string;
+    xiaomiApiKey?: string;
   };
 };
 
@@ -49,6 +51,7 @@ export async function applyAuthChoice(
     applyAuthChoiceCopilotProxy,
     applyAuthChoiceQwenPortal,
     applyAuthChoiceVolcengine,
+    applyAuthChoiceXiaomi,
   ];
 
   for (const handler of handlers) {

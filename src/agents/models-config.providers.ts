@@ -458,6 +458,26 @@ export function buildVolcengineProvider(): ProviderConfig {
   };
 }
 
+export const XIAOMI_API_BASE_URL = "https://api.xiaomimimo.com/v1";
+
+export function buildXiaomiProvider(): ProviderConfig {
+  return {
+    baseUrl: XIAOMI_API_BASE_URL,
+    api: "openai-completions",
+    models: [
+      {
+        id: "mimo-v2-flash",
+        name: "MiMo V2 Flash",
+        reasoning: true,
+        input: ["text"] as ("text" | "image")[],
+        cost: { input: 0.7, output: 2.1, cacheRead: 0.07, cacheWrite: 0 },
+        contextWindow: 131072,
+        maxTokens: 65536,
+      },
+    ],
+  };
+}
+
 export async function resolveImplicitProviders(params: {
   agentDir: string;
 }): Promise<ModelsConfig["providers"]> {
@@ -527,6 +547,13 @@ export async function resolveImplicitProviders(params: {
     resolveApiKeyFromProfiles({ provider: "volcengine", store: authStore });
   if (volcengineKey) {
     providers.volcengine = { ...buildVolcengineProvider(), apiKey: volcengineKey };
+  }
+
+  const xiaomiKey =
+    resolveEnvApiKeyVarName("xiaomi") ??
+    resolveApiKeyFromProfiles({ provider: "xiaomi", store: authStore });
+  if (xiaomiKey) {
+    providers.xiaomi = { ...buildXiaomiProvider(), apiKey: xiaomiKey };
   }
 
   const qwenProfiles = listProfilesForProvider(authStore, "qwen-portal");

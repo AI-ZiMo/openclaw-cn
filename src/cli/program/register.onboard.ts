@@ -74,6 +74,7 @@ export function registerOnboardCommand(program: Command) {
     .option("--venice-api-key <key>", "Venice API 密钥")
     .option("--opencode-zen-api-key <key>", "OpenCode Zen API 密钥")
     .option("--volcengine-api-key <key>", "Volcengine API 密钥")
+    .option("--xiaomi-api-key <key>", "小米 MiMo API 密钥")
     .option("--gateway-port <port>", "网关端口")
     .option(
       "--gateway-bind <mode>",
@@ -128,6 +129,7 @@ export function registerOnboardCommand(program: Command) {
             veniceApiKey: opts.veniceApiKey as string | undefined,
             opencodeZenApiKey: opts.opencodeZenApiKey as string | undefined,
             volcengineApiKey: opts.volcengineApiKey as string | undefined,
+            xiaomiApiKey: opts.xiaomiApiKey as string | undefined,
             gatewayPort:
               typeof gatewayPort === "number" && Number.isFinite(gatewayPort)
                 ? gatewayPort

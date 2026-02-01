@@ -369,6 +369,7 @@ export async function runOnboardingWizard(
       tokenProvider: opts.tokenProvider,
       token: opts.authChoice === "apiKey" && opts.token ? opts.token : undefined,
       volcengineApiKey: opts.volcengineApiKey,
+      xiaomiApiKey: opts.xiaomiApiKey,
     },
   });
   nextConfig = authResult.config;
