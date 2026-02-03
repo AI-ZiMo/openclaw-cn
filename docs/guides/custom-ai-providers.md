@@ -216,6 +216,39 @@ DeepSeek 官方 API：
 }
 ```
 
+### 火山引擎 (Volcengine / 豆包)
+
+火山引擎提供字节跳动的 AI 模型服务（豆包等）。
+
+```json5
+{
+  env: { VOLCENGINE_API_KEY: "your-api-key..." },
+  agents: {
+    defaults: { model: { primary: "volcengine/doubao-1-5-pro-32k-250115" } }
+  },
+  models: {
+    providers: {
+      volcengine: {
+        baseUrl: "https://ark.cn-beijing.volces.com/api/v3",
+        apiKey: "${VOLCENGINE_API_KEY}",
+        api: "openai-completions",
+        models: [
+          { id: "doubao-1-5-pro-32k-250115", name: "豆包 1.5 Pro 32K" },
+          { id: "doubao-1-5-lite-32k-250115", name: "豆包 1.5 Lite 32K" }
+        ]
+      }
+    }
+  }
+}
+```
+
+**企业用户自定义 Header**：如果需要为请求添加自定义 Header（如标识调用来源），可通过环境变量配置：
+
+```bash
+export MODEL_AGENT_CLIENT_REQ_ID="X-Custom-Header-Name"
+export MODEL_AGENT_CLIENT_REQ_VALUE="your-custom-value"
+```
+
 ---
 
 ## 本地模型配置
