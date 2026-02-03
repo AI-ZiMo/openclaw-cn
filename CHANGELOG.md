@@ -2,6 +2,15 @@
 
 Docs: https://docs.clawd.bot
 
+## 2026.2.4
+
+### 🔧 修复（Fixes）
+
+- Packaging: 修复 npm 包缺少 Control UI 资源的问题，导致网关管理页面无法正常显示 (#28)
+- Dependencies: 使用 `@openclaw-cn/libsignal` 替代 git 依赖，解决中国大陆用户因无法访问 GitHub 导致安装失败的问题
+
+---
+
 ## 2026.2.3
 
 ### 🔧 修复（Fixes）

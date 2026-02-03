@@ -5,6 +5,8 @@ docker-compose.extra.yml
 dist
 # Keep bundled extension dist for npm packaging
 !extensions/feishu/dist/
+# Keep Control UI assets for npm packaging
+!dist/control-ui/
 *.bun-build
 pnpm-lock.yaml
 bun.lock
