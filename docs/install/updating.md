@@ -180,6 +180,24 @@ openclaw-cn doctor --non-interactive
 openclaw-cn doctor --repair
 ```
 
+### 问题 5：Web UI 显示 `disconnected (1006): no reason`
+
+**症状**：更新后打开 Web 网关管理页面，显示错误 `disconnected (1006): no reason`
+
+**原因**：浏览器缓存了旧版本的设备认证数据，与新版 Gateway 不兼容
+
+**快速解决**：
+
+1. **清除浏览器本地存储**（推荐）：
+   - Chrome：按 `F12` → Application → Local Storage → 右键删除 `clawdbot` 相关条目
+   - 或者：`Ctrl+Shift+Delete` → 勾选「Cookie 和站点数据」→ 清除
+
+2. **使用无痕模式**：在新的无痕/隐私窗口打开 Web UI
+
+3. **换一个浏览器**：暂时使用另一个浏览器访问
+
+详细说明见 [故障排除指南](/gateway/troubleshooting#web-ui-1006-no-reason)
+
 ## 回滚到旧版本
 
 如果新版本有问题，可以回滚到之前的版本：

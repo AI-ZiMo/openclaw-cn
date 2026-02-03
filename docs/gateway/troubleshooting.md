@@ -114,6 +114,82 @@ openclaw-cn config set gateway.controlUi.allowInsecureAuth true
 openclaw-cn gateway restart
 ```
 
+### Web UI 显示 "disconnected (1006): no reason" 错误 {#web-ui-1006-no-reason}
+
+当您更新 Openclaw 后打开 Web 网关管理页面，可能会遇到以下错误：
+
+```
+disconnected (1006): no reason
+```
+
+**问题原因：**
+
+WebSocket 错误码 1006 表示“异常关闭”，连接在没有收到正常关闭帧的情况下断开。
+
+根因是 **浏览器本地存储（localStorage）中缓存了旧版本的设备认证数据**：
+
+1. 旧版本 Web UI 在浏览器中保存了设备身份密钥对和认证 token
+2. 更新到新版本后，Gateway 服务器重启
+3. 刷新页面时，新版前端复用了旧的 token
+4. 旧 token 与新版 Gateway 的验证逻辑不兼容，导致 WebSocket 握手失败
+
+**解决方案：**
+
+**方法 1：清除浏览器本地存储（推荐）**
+
+<Tabs>
+  <Tab title="Chrome">
+    1. 按 `F12` 打开开发者工具
+    2. 点击 **Application**（应用）选项卡
+    3. 左侧展开 **Local Storage**
+    4. 找到 `http://127.0.0.1:18789` 或您的网关地址
+    5. 右键删除以下条目：
+       - `clawdbot-device-identity-v1`
+       - `clawdbot.device.auth.v1`
+    6. 刷新页面
+  </Tab>
+  <Tab title="Firefox">
+    1. 按 `F12` 打开开发者工具
+    2. 点击 **存储**（Storage）选项卡
+    3. 左侧展开 **本地存储**（Local Storage）
+    4. 找到并删除 `clawdbot` 相关条目
+    5. 刷新页面
+  </Tab>
+  <Tab title="Safari">
+    1. 菜单栏 → 开发 → 显示 Web 检查器
+    2. 点击 **存储**（Storage）选项卡
+    3. 左侧展开 **本地存储**
+    4. 找到并删除 `clawdbot` 相关条目
+    5. 刷新页面
+  </Tab>
+  <Tab title="Edge">
+    1. 按 `F12` 打开开发者工具
+    2. 点击 **应用程序**（Application）选项卡
+    3. 左侧展开 **本地存储**（Local Storage）
+    4. 找到并删除 `clawdbot` 相关条目
+    5. 刷新页面
+  </Tab>
+</Tabs>
+
+**方法 2：使用无痕/隐私模式**
+
+在新的无痕浏览窗口打开 Web UI，这样会使用全新的本地存储。
+
+- Chrome：`Ctrl+Shift+N`（Windows/Linux）或 `Cmd+Shift+N`（macOS）
+- Firefox：`Ctrl+Shift+P`（Windows/Linux）或 `Cmd+Shift+P`（macOS）
+- Safari：文件 → 新建私密窗口
+
+**方法 3：清除站点数据（快捷方式）**
+
+`Ctrl+Shift+Delete`（Windows/Linux）或 `Cmd+Shift+Delete`（macOS），然后：
+- 时间范围选择“全部时间”
+- 仅勾选“Cookie 和站点数据”
+- 点击清除
+
+**预防建议：**
+
+每次大版本更新后，如果遇到连接问题，优先尝试清除浏览器本地存储。
+
 ### CI Secrets Scan 失败
 
 这意味着 `detect-secrets` 找到了基准线中尚未包含的新候选项目。
