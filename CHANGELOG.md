@@ -2,7 +2,7 @@
 
 Docs: https://docs.clawd.bot
 
-## 2026.2.4.1
+## 2026.2.5
 
 ### 🔧 修复（Fixes）
 
