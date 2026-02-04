@@ -425,6 +425,39 @@ openclaw-cn pairing list feishu
 
 > **注意**：流式卡片需要 `cardkit:card:write` 权限，请确保在飞书开放平台已配置此权限。
 
+### 消息引用
+
+在群聊中，机器人的回复可以引用用户发送的原始消息，让对话上下文更加清晰。
+
+**配置选项**：
+
+```json5
+{
+  channels: {
+    feishu: {
+      // 账户级别配置（默认 "all"）
+      replyToMode: "all",
+      groups: {
+        "oc_xxx": {
+          // 特定群组可以覆盖
+          replyToMode: "first"
+        }
+      }
+    }
+  }
+}
+```
+
+**replyToMode 值说明**：
+
+| 值 | 行为 |
+|----|------|
+| `"off"` | 不引用原消息（私聊默认值） |
+| `"first"` | 仅在第一条回复时引用原消息 |
+| `"all"` | 所有回复都引用原消息（群聊默认值） |
+
+> **注意**：消息引用功能与流式卡片输出（`streaming: true`）不能同时使用。当启用流式输出时，回复会以卡片形式呈现，不会显示引用。
+
 ### 多 Agent 路由
 
 通过 `bindings` 配置，您可以用一个飞书机器人对接多个不同功能或性格的 Agent。系统会根据用户 ID 或群组 ID 自动将对话分发到对应的 Agent。
@@ -507,6 +540,8 @@ openclaw-cn pairing list feishu
 | `channels.feishu.groupAllowFrom` | 群组白名单 | - |
 | `channels.feishu.groups.<chat_id>.requireMention` | 是否需要 @提及 | `true` |
 | `channels.feishu.groups.<chat_id>.enabled` | 是否启用该群组 | `true` |
+| `channels.feishu.groups.<chat_id>.replyToMode` | 群组消息引用模式 | 继承账户级 |
+| `channels.feishu.replyToMode` | 消息引用模式 | `all` |
 | `channels.feishu.textChunkLimit` | 消息分块大小 | `2000` |
 | `channels.feishu.mediaMaxMb` | 媒体大小限制 | `30` |
 | `channels.feishu.streaming` | 启用流式卡片输出 | `true` |
