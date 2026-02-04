@@ -10,6 +10,7 @@ Docs: https://docs.clawd.bot
 
 ### 🔧 修复（Fixes）
 
+- Dependencies: 使用 `@openclaw-cn/baileys` 替代上游 `@whiskeysockets/baileys`，彻底解决全局安装时 libsignal git 依赖导致的安装失败问题
 - Dependencies: 完善 libsignal 依赖替换，添加 npm `overrides` 和 yarn `resolutions` 支持，修复 npm/yarn 用户仍遇到 git 依赖安装失败的问题
 - Feishu: 优化权限缺失时的错误提示，降低国内用户配置排障门槛 (#27)
 
