@@ -130,10 +130,10 @@ export function renderApp(state: AppViewState) {
           </button>
           <div class="brand">
             <div class="brand-logo">
-              <img src="https://mintcdn.com/clawdhub/4rYvG-uuZrMK_URE/assets/pixel-lobster.svg?fit=max&auto=format&n=4rYvG-uuZrMK_URE&q=85&s=da2032e9eac3b5d9bfe7eb96ca6a8a26" alt="Clawdbot" />
+              <img src="/gloryagent.jpg" alt="GloryAgent" />
             </div>
             <div class="brand-text">
-              <div class="brand-title">CLAWDBOT</div>
+              <div class="brand-title">GloryAgent</div>
               <div class="brand-sub">网关控制台</div>
             </div>
           </div>
