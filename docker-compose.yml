@@ -18,7 +18,7 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-./data/.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./data/clawd}:/home/node/clawd
+      - ${OPENCLAW_WORKSPACE_DIR:-./data/openclaw}:/home/node/openclaw
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
@@ -48,7 +48,7 @@ services:
       CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE}
     volumes:
       - ${OPENCLAW_CONFIG_DIR:-./data/.openclaw}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR:-./data/clawd}:/home/node/clawd
+      - ${OPENCLAW_WORKSPACE_DIR:-./data/openclaw}:/home/node/openclaw
     stdin_open: true
     tty: true
     init: true

@@ -44,10 +44,10 @@ echo ""
 
 # 创建配置和工作区目录
 mkdir -p "${OPENCLAW_CONFIG_DIR:-$HOME/.openclaw}"
-mkdir -p "${OPENCLAW_WORKSPACE_DIR:-$HOME/clawd}"
+mkdir -p "${OPENCLAW_WORKSPACE_DIR:-$HOME/openclaw}"
 
 export OPENCLAW_CONFIG_DIR="${OPENCLAW_CONFIG_DIR:-$HOME/.openclaw}"
-export OPENCLAW_WORKSPACE_DIR="${OPENCLAW_WORKSPACE_DIR:-$HOME/clawd}"
+export OPENCLAW_WORKSPACE_DIR="${OPENCLAW_WORKSPACE_DIR:-$HOME/openclaw}"
 export OPENCLAW_GATEWAY_PORT="${OPENCLAW_GATEWAY_PORT:-18789}"
 export OPENCLAW_BRIDGE_PORT="${OPENCLAW_BRIDGE_PORT:-18790}"
 export OPENCLAW_GATEWAY_BIND="${OPENCLAW_GATEWAY_BIND:-lan}"
@@ -87,7 +87,7 @@ YAML
   if [[ -n "$home_volume" ]]; then
     printf '      - %s:/home/node\n' "$home_volume" >>"$EXTRA_COMPOSE_FILE"
     printf '      - %s:/home/node/.openclaw\n' "$OPENCLAW_CONFIG_DIR" >>"$EXTRA_COMPOSE_FILE"
-    printf '      - %s:/home/node/clawd\n' "$OPENCLAW_WORKSPACE_DIR" >>"$EXTRA_COMPOSE_FILE"
+    printf '      - %s:/home/node/openclaw\n' "$OPENCLAW_WORKSPACE_DIR" >>"$EXTRA_COMPOSE_FILE"
   fi
 
   for mount in "${mounts[@]}"; do
@@ -102,7 +102,7 @@ YAML
   if [[ -n "$home_volume" ]]; then
     printf '      - %s:/home/node\n' "$home_volume" >>"$EXTRA_COMPOSE_FILE"
     printf '      - %s:/home/node/.openclaw\n' "$OPENCLAW_CONFIG_DIR" >>"$EXTRA_COMPOSE_FILE"
-    printf '      - %s:/home/node/clawd\n' "$OPENCLAW_WORKSPACE_DIR" >>"$EXTRA_COMPOSE_FILE"
+    printf '      - %s:/home/node/openclaw\n' "$OPENCLAW_WORKSPACE_DIR" >>"$EXTRA_COMPOSE_FILE"
   fi
 
   for mount in "${mounts[@]}"; do
@@ -217,7 +217,7 @@ echo "Telegram（机器人令牌）:"
 echo "  ${COMPOSE_HINT} run --rm openclaw-cn-cli channels add --channel telegram --token <token>"
 echo "Discord（机器人令牌）:"
 echo "  ${COMPOSE_HINT} run --rm openclaw-cn-cli channels add --channel discord --token <token>"
-echo "文档: https://clawd.org.cn/docs/channels"
+echo "文档: https://openclaw.org.cn/docs/channels"
 
 echo ""
 echo "==> 启动网关"
@@ -253,5 +253,5 @@ echo "   检查健康: ${COMPOSE_HINT} exec openclaw-cn-gateway node dist/index.
 echo "   停止网关: ${COMPOSE_HINT} down"
 echo "   重启网关: ${COMPOSE_HINT} restart openclaw-cn-gateway"
 echo ""
-echo "📚 文档: https://clawd.org.cn/docs"
+echo "📚 文档: https://openclaw.org.cn/docs"
 echo ""
