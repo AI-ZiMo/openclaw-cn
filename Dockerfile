@@ -69,7 +69,11 @@ RUN apt-get update \
     poppler-utils \
     gcc \
     python3 \
+    python3-pip \
   && rm -rf /var/lib/apt/lists/*
+
+# 安装 docx skill 所需的 Python 依赖
+RUN pip3 install --no-cache-dir lxml defusedxml
 
 # 复制构建产物和扩展
 COPY --from=builder /app/dist ./dist
