@@ -70,6 +70,7 @@ RUN apt-get update \
     gcc \
     python3 \
     python3-pip \
+  || (apt-get update && apt-get install -y --fix-missing) \
   && rm -rf /var/lib/apt/lists/*
 
 # 安装 docx skill 所需的 Python 依赖
