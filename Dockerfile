@@ -74,7 +74,11 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 # 安装 docx skill 所需的 Python 依赖
-RUN pip3 install --no-cache-dir lxml defusedxml
+# 使用 apt 安装 lxml，defusedxml 通过 pip 安装（debian 无此包）
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3-lxml \
+  && rm -rf /var/lib/apt/lists/*
+RUN pip3 install --no-cache-dir --break-system-packages defusedxml
 
 # 复制构建产物和扩展
 COPY --from=builder /app/dist ./dist
