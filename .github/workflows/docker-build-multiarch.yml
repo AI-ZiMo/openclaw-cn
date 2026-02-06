@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_IMAGE_NAME || 'jiangzhengtao/gloryagent' }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_IMAGE_NAME || 'jiang520/gloryagent' }}
 
 jobs:
   build-and-push:
@@ -58,7 +58,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            OPENCLAW_DOCKER_APT_PACKAGES=
+            OPENCLAW_DOCKER_APT_PACKAGES=pandoc libreoffice-writer poppler-utils gcc
 
   verify-image:
     needs: build-and-push
