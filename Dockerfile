@@ -93,6 +93,9 @@ COPY --from=builder /app/skills ./skills
 # 仅安装生产依赖（docx 现在通过 package.json 自动安装）
 RUN pnpm install --frozen-lockfile --production --ignore-scripts
 
+# 安装 docx npm 包（用于创建 .docx 文件）
+RUN npm install -g docx
+
 # 清理缓存以减小镜像大小
 RUN pnpm store prune
 
