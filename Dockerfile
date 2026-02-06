@@ -4,7 +4,7 @@ FROM node:22-bookworm AS builder
 # 设置构建参数
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
-ARG OPENCLAW_DOCKER_APT_PACKAGES=""
+ARG OPENCLAW_DOCKER_APT_PACKAGES="pandoc libreoffice-writer poppler-utils gcc"
 
 # 打印构建信息用于调试
 RUN echo "Building for: $TARGETPLATFORM on $BUILDPLATFORM"
@@ -59,6 +59,18 @@ RUN corepack enable && \
 
 WORKDIR /app
 
+# 安装 docx skill 所需的系统依赖
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    pandoc \
+    libreoffice-writer \
+    libreoffice-calc \
+    libreoffice-impress \
+    poppler-utils \
+    gcc \
+    python3 \
+  && rm -rf /var/lib/apt/lists/*
+
 # 复制构建产物和扩展
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
@@ -66,9 +78,14 @@ COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.ya
 COPY --from=builder /app/extensions ./extensions
 # 复制运行时所需的文档（templates 用于 agent 任务）
 COPY --from=builder /app/docs ./docs
+# 复制 skills 目录（包含 docx skill 的 Python 脚本和模板）
+COPY --from=builder /app/skills ./skills
 
 # 仅安装生产依赖
 RUN pnpm install --frozen-lockfile --production --ignore-scripts
+
+# 安装 docx npm 包（用于创建 .docx 文件）
+RUN npm install -g docx
 
 # 清理缓存以减小镜像大小
 RUN pnpm store prune
