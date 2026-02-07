@@ -116,7 +116,7 @@ openclaw-cn gateway restart
 
 ### Web UI 显示 "disconnected (1006): no reason" 错误 {#web-ui-1006-no-reason}
 
-当您更新 Openclaw 后打开 Web 网关管理页面，可能会遇到以下错误：
+当您访问 Web 网关管理页面时，可能会遇到以下错误：
 
 ```
 disconnected (1006): no reason
@@ -126,50 +126,67 @@ disconnected (1006): no reason
 
 WebSocket 错误码 1006 表示“异常关闭”，连接在没有收到正常关闭帧的情况下断开。
 
-根因是 **浏览器本地存储（localStorage）中缓存了旧版本的设备认证数据**：
+常见原因包括：
+1. **浏览器缓存旧 token**：更新版本后，浏览器 localStorage 中的旧设备认证数据与新版网关不兼容
+2. **网关进程崩溃/重启**：网关突然退出，没有机会发送正常的关闭帧（常见于 Docker 部署）
+3. **网络中断**：容器网络问题、反向代理超时或资源限制导致连接被强制断开
 
-1. 旧版本 Web UI 在浏览器中保存了设备身份密钥对和认证 token
-2. 更新到新版本后，Gateway 服务器重启
-3. 刷新页面时，新版前端复用了旧的 token
-4. 旧 token 与新版 Gateway 的验证逻辑不兼容，导致 WebSocket 握手失败
+---
+
+#### 场景 1：更新后首次连接失败
+
+如果您刚更新了 Clawdbot 版本，最可能的原因是浏览器缓存了旧的设备认证数据。
 
 **解决方案：**
 
 **方法 1：清除浏览器本地存储（推荐）**
 
-<Tabs>
-  <Tab title="Chrome">
-    1. 按 `F12` 打开开发者工具
-    2. 点击 **Application**（应用）选项卡
-    3. 左侧展开 **Local Storage**
-    4. 找到 `http://127.0.0.1:18789` 或您的网关地址
-    5. 右键删除以下条目：
-       - `clawdbot-device-identity-v1`
-       - `clawdbot.device.auth.v1`
-    6. 刷新页面
-  </Tab>
-  <Tab title="Firefox">
-    1. 按 `F12` 打开开发者工具
-    2. 点击 **存储**（Storage）选项卡
-    3. 左侧展开 **本地存储**（Local Storage）
-    4. 找到并删除 `clawdbot` 相关条目
-    5. 刷新页面
-  </Tab>
-  <Tab title="Safari">
-    1. 菜单栏 → 开发 → 显示 Web 检查器
-    2. 点击 **存储**（Storage）选项卡
-    3. 左侧展开 **本地存储**
-    4. 找到并删除 `clawdbot` 相关条目
-    5. 刷新页面
-  </Tab>
-  <Tab title="Edge">
-    1. 按 `F12` 打开开发者工具
-    2. 点击 **应用程序**（Application）选项卡
-    3. 左侧展开 **本地存储**（Local Storage）
-    4. 找到并删除 `clawdbot` 相关条目
-    5. 刷新页面
-  </Tab>
-</Tabs>
+<details>
+<summary>Chrome</summary>
+
+1. 按 `F12` 打开开发者工具
+2. 点击 **Application**（应用）选项卡
+3. 左侧展开 **Local Storage**
+4. 找到 `http://127.0.0.1:18789` 或您的网关地址
+5. 右键删除以下条目：
+   - `clawdbot-device-identity-v1`
+   - `clawdbot.device.auth.v1`
+6. 刷新页面
+
+</details>
+
+<details>
+<summary>Firefox</summary>
+
+1. 按 `F12` 打开开发者工具
+2. 点击 **存储**（Storage）选项卡
+3. 左侧展开 **本地存储**（Local Storage）
+4. 找到并删除 `clawdbot` 相关条目
+5. 刷新页面
+
+</details>
+
+<details>
+<summary>Safari</summary>
+
+1. 菜单栏 → 开发 → 显示 Web 检查器
+2. 点击 **存储**（Storage）选项卡
+3. 左侧展开 **本地存储**
+4. 找到并删除 `clawdbot` 相关条目
+5. 刷新页面
+
+</details>
+
+<details>
+<summary>Edge</summary>
+
+1. 按 `F12` 打开开发者工具
+2. 点击 **应用程序**（Application）选项卡
+3. 左侧展开 **本地存储**（Local Storage）
+4. 找到并删除 `clawdbot` 相关条目
+5. 刷新页面
+
+</details>
 
 **方法 2：使用无痕/隐私模式**
 
@@ -186,9 +203,139 @@ WebSocket 错误码 1006 表示“异常关闭”，连接在没有收到正常�
 - 仅勾选“Cookie 和站点数据”
 - 点击清除
 
+---
+
+#### 场景 2：Docker 部署中频繁出现 1006 错误 {#docker-1006-frequent}
+
+如果您使用 Docker 部署，且 **清除浏览器缓存后仍然经常遇到 1006 错误**，问题很可能是网关进程不稳定。
+
+**诊断步骤：**
+
+**步骤 1：检查容器状态和重启次数**
+
+```bash
+# 查看容器状态
+docker compose ps
+
+# 查看容器重启次数
+docker inspect openclaw-cn-gateway --format='{{.RestartCount}}'
+
+# 如果重启次数 > 0，说明容器曾经崩溃过
+```
+
+**步骤 2：查看容器日志**
+
+```bash
+# 查看最近日志
+docker compose logs -f openclaw-cn-gateway --tail 100
+
+# 检查是否有错误或崩溃信息
+docker compose logs openclaw-cn-gateway 2>&1 | grep -i "error\|crash\|killed\|oom\|fatal"
+```
+
+**步骤 3：检查资源使用**
+
+```bash
+# 查看容器资源使用
+docker stats openclaw-cn-gateway --no-stream
+
+# 检查是否接近内存限制
+```
+
+**常见原因和解决方案：**
+
+| 症状 | 可能原因 | 解决方案 |
+|------|---------|---------|
+| 容器频繁重启 | 内存不足 (OOM) | 增加 Docker 内存限制，或优化配置减少内存使用 |
+| 日志中有 `SIGKILL` 或 `killed` | 资源限制触发 | 检查 `docker-compose.yml` 中的 `mem_limit` 设置 |
+| 日志中有 `ECONNRESET` | 网络问题 | 检查 Docker 网络配置和防火墙规则 |
+| 无明显错误但连接断开 | 空闲超时 | 见下方"反向代理配置"部分 |
+
+**修复建议：**
+
+**1. 增加容器资源限制（如果使用了限制）**
+
+在 `docker-compose.yml` 中调整：
+
+```yaml
+services:
+  openclaw-cn-gateway:
+    # ... 其他配置 ...
+    deploy:
+      resources:
+        limits:
+          memory: 1G  # 适当增加内存限制
+```
+
+**2. 确保数据卷正确挂载**
+
+```bash
+# 检查数据目录是否存在且有正确权限
+ls -la ${OPENCLAW_CONFIG_DIR:-./data/.openclaw}
+
+# 确保容器内用户有写入权限
+docker compose exec openclaw-cn-gateway ls -la /home/node/.openclaw
+```
+
+**3. 检查网关健康状态**
+
+```bash
+# 在容器内运行健康检查
+docker compose exec openclaw-cn-gateway node dist/index.js health --json
+```
+
+---
+
+#### 场景 3：使用反向代理时的 1006 错误
+
+如果您在 Nginx、Caddy 或 Traefik 等反向代理后面运行网关，WebSocket 连接可能因代理配置不当而断开。
+
+**Nginx 配置示例：**
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:18789;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    
+    # 关键：增加超时时间防止空闲断开
+    proxy_read_timeout 86400s;
+    proxy_send_timeout 86400s;
+}
+```
+
+**Caddy 配置示例：**
+
+```caddyfile
+your-domain.com {
+    reverse_proxy localhost:18789 {
+        # WebSocket 支持是自动的
+        # 但可以显式设置超时
+        transport http {
+            read_timeout 0
+        }
+    }
+}
+```
+
+**检查要点：**
+
+- 确保代理正确传递 WebSocket 升级头（`Upgrade` 和 `Connection`）
+- 将空闲超时设置为较长时间或禁用
+- 确保 `X-Forwarded-*` 头正确传递
+
+---
+
 **预防建议：**
 
-每次大版本更新后，如果遇到连接问题，优先尝试清除浏览器本地存储。
+- 每次大版本更新后，如果遇到连接问题，优先尝试清除浏览器本地存储
+- Docker 部署时，建议启用容器日志持久化，便于排查问题
+- 使用反向代理时，确保 WebSocket 配置正确
 
 ### CI Secrets Scan 失败
 
