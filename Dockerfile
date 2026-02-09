@@ -90,9 +90,6 @@ COPY --from=builder /app/docs ./docs
 # 复制 skills 目录（包含 docx skill 的 Python 脚本和模板）
 COPY --from=builder /app/skills ./skills
 
-# 校验行芯文档 skill（仅依赖 Python 标准库，无需额外安装 npm/pip 库）
-RUN python3 -m py_compile /app/skills/xingxin-test-doc/scripts/generate.py
-
 # 仅安装生产依赖
 RUN pnpm install --frozen-lockfile --production --ignore-scripts
 
