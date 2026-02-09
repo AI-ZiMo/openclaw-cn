@@ -90,10 +90,10 @@ COPY --from=builder /app/docs ./docs
 # 复制 skills 目录（包含 docx skill 的 Python 脚本和模板）
 COPY --from=builder /app/skills ./skills
 
-# 仅安装生产依赖（docx 现在通过 package.json 自动安装）
+# 仅安装生产依赖
 RUN pnpm install --frozen-lockfile --production --ignore-scripts
 
-# 安装 docx npm 包（用于创建 .docx 文件）
+# 安装 docx npm 包（仅供通用 docx skill 的新建文档场景）
 RUN npm install -g docx
 
 # 清理缓存以减小镜像大小
