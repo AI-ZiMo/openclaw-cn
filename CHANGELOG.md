@@ -2,6 +2,19 @@
 
 Docs: https://docs.clawd.bot
 
+## 0.1.5
+
+### ✨ 新功能（Features）
+
+- **DOCX Skill**：添加完整的 Word 文档处理 skill，支持批注、修订、验证等功能
+- **行芯测试文档生成器**：添加 xingxin-test-doc skill，用于生成测试文档和验证示例
+- **Docker 多架构支持**：优化 Dockerfile，支持 AMD64 和 ARM64 架构构建，添加 LibreOffice、Pandoc 等文档处理依赖
+
+### 🔧 修复（Fixes）
+
+- **Docker 构建优化**：移除 xingxin skill 编译检查，简化构建流程
+- **清理构建产物**：移除生成的 pycache 缓存文件
+
 ## 0.1.0
 
 > 🎉 **版本号规范化**：从本版本起，openclaw-cn 采用标准语义化版本号 (Semver)，告别日期版本。
