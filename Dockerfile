@@ -53,13 +53,14 @@ RUN pnpm ui:build
 FROM node:22-bookworm
 
 ARG TARGETPLATFORM
+ARG MARKITDOWN_VERSION=0.1.4
 
 RUN corepack enable && \
     echo "Runtime image for: $TARGETPLATFORM"
 
 WORKDIR /app
 
-# 安装 docx skill 所需的系统依赖
+# 安装 docx + markitdown skill 所需的系统依赖
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     pandoc \
@@ -67,18 +68,22 @@ RUN apt-get update \
     libreoffice-calc \
     libreoffice-impress \
     poppler-utils \
+    ffmpeg \
+    libimage-exiftool-perl \
     gcc \
     python3 \
     python3-pip \
   || (apt-get update && apt-get install -y --fix-missing) \
   && rm -rf /var/lib/apt/lists/*
 
-# 安装 docx skill 所需的 Python 依赖
+# 安装 docx + markitdown skill 所需的 Python 依赖
 # 使用 apt 安装 lxml，defusedxml 通过 pip 安装（debian 无此包）
 RUN apt-get update \
   && apt-get install -y --no-install-recommends python3-lxml \
   && rm -rf /var/lib/apt/lists/*
-RUN pip3 install --no-cache-dir --break-system-packages defusedxml
+RUN pip3 install --no-cache-dir --break-system-packages \
+  defusedxml \
+  "markitdown[all]==${MARKITDOWN_VERSION}"
 
 # 复制构建产物和扩展
 COPY --from=builder /app/dist ./dist
@@ -89,8 +94,11 @@ COPY --from=builder /app/patches ./patches
 COPY --from=builder /app/extensions ./extensions
 # 复制运行时所需的文档（templates 用于 agent 任务）
 COPY --from=builder /app/docs ./docs
-# 复制 skills 目录（包含 docx skill 的 Python 脚本和模板）
-COPY --from=builder /app/skills ./skills
+# 仅复制指定 skills，避免把全部 skills 打进镜像
+COPY --from=builder /app/skills/docx ./skills/docx
+COPY --from=builder /app/skills/markitdown ./skills/markitdown
+COPY --from=builder /app/skills/skill-creator ./skills/skill-creator
+COPY --from=builder /app/skills/xingxin-test-doc ./skills/xingxin-test-doc
 
 # 仅安装生产依赖
 RUN pnpm install --frozen-lockfile --production --ignore-scripts
